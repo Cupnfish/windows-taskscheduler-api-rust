@@ -1,4 +1,4 @@
-use windows::Win32::Foundation::BSTR;
+use windows::core::BSTR;
 
 pub struct TaskAction {
     pub(crate) id: BSTR,

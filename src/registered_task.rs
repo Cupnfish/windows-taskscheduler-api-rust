@@ -1,6 +1,6 @@
 use std::time::Duration;
 use windows::core::Result;
-use windows::Win32::Foundation::{BSTR, SYSTEMTIME};
+use windows::Win32::Foundation::{SYSTEMTIME, VARIANT_BOOL};
 use windows::Win32::System::TaskScheduler::{
     IRegisteredTask, IRunningTask, TASK_STATE_DISABLED, TASK_STATE_QUEUED, TASK_STATE_READY,
     TASK_STATE_RUNNING, TASK_STATE_UNKNOWN,
@@ -50,23 +50,27 @@ impl RegisteredTask {
     }
 
     pub fn enabled(&self) -> Result<bool> {
-        unsafe { self.registered_task.Enabled().map(|s| s != 0) }
+        unsafe { self.registered_task.Enabled().map(|s| s.as_bool()) }
     }
 
     pub fn set_enabled(&self, enabled: bool) -> Result<()> {
-        unsafe { self.registered_task.SetEnabled(enabled as i16) }
+        unsafe {
+            self.registered_task
+                .SetEnabled(Into::<VARIANT_BOOL>::into(enabled))
+        }
     }
 
     pub fn run_raw(&self) -> Result<IRunningTask> {
         // TODO: support variants
-        unsafe { self.registered_task.Run(None) }
+        unsafe { self.registered_task.Run(Default::default()) }
     }
 
     pub fn runex_raw(&self, flags: i32, sessionid: i32, user: &str) -> Result<IRunningTask> {
         // TODO: support variants
         unsafe {
-            let user = BSTR::from(user);
-            self.registered_task.RunEx(None, flags, sessionid, user)
+            let user = &user.into();
+            self.registered_task
+                .RunEx(Default::default(), flags, sessionid, user)
         }
     }
 

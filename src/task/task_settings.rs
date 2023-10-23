@@ -1,9 +1,10 @@
 use std::time::Duration;
-use windows::Win32::Foundation::BSTR;
+
+use windows::core::BSTR;
 
 pub struct IdleSettings {
-    pub(crate) stop_on_idle_end: i16,
-    pub(crate) restart_on_idle: i16,
+    pub(crate) stop_on_idle_end: bool,
+    pub(crate) restart_on_idle: bool,
     pub(crate) idle_duration: BSTR,
     pub(crate) wait_timeout: BSTR,
 }
@@ -15,8 +16,8 @@ impl IdleSettings {
         wait_timeout: Duration,
     ) -> Self {
         Self {
-            stop_on_idle_end: stop_on_idle_end as i16,
-            restart_on_idle: restart_on_idle as i16,
+            stop_on_idle_end,
+            restart_on_idle,
             idle_duration: format!("PT{}S", idle_duration.as_secs()).into(),
             wait_timeout: format!("PT{}S", wait_timeout.as_secs()).into(),
         }
@@ -25,12 +26,13 @@ impl IdleSettings {
 
 pub struct TaskSettings {
     pub(crate) idle_settings: Option<IdleSettings>,
-    pub(crate) run_only_if_idle: i16,
-    pub(crate) wake_to_run: i16,
+    pub(crate) run_only_if_idle: bool,
+    pub(crate) wake_to_run: bool,
     pub(crate) execution_time_limit: BSTR,
-    pub(crate) disallow_start_if_on_batteries: i16,
-    pub(crate) allow_hard_terminate: i16,
+    pub(crate) disallow_start_if_on_batteries: bool,
+    pub(crate) allow_hard_terminate: bool,
 }
+
 impl TaskSettings {
     pub fn new(
         idle_settings: Option<IdleSettings>,
@@ -42,11 +44,11 @@ impl TaskSettings {
     ) -> Self {
         Self {
             idle_settings,
-            run_only_if_idle: run_only_if_idle as i16,
-            wake_to_run: wake_to_run as i16,
+            run_only_if_idle,
+            wake_to_run,
             execution_time_limit: format!("PT{}S", execution_time_limit.as_secs()).into(),
-            disallow_start_if_on_batteries: disallow_start_if_on_batteries as i16,
-            allow_hard_terminate: allow_hard_terminate as i16,
+            disallow_start_if_on_batteries,
+            allow_hard_terminate,
         }
     }
 }

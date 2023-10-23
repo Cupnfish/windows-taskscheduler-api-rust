@@ -1,10 +1,11 @@
 use std::time::Duration;
-use windows::Win32::Foundation::BSTR;
+
+use windows::core::BSTR;
 
 pub struct TaskIdleTrigger {
     pub(crate) id: BSTR,
     pub(crate) repetition_interval: BSTR,
-    pub(crate) repetition_stop_at_duration_end: i16,
+    pub(crate) repetition_stop_at_duration_end: bool,
     pub(crate) execution_time_limit: BSTR,
 }
 impl TaskIdleTrigger {
@@ -17,7 +18,7 @@ impl TaskIdleTrigger {
         Self {
             id: id.into(),
             repetition_interval: format!("PT{}S", repetition_interval.as_secs()).into(),
-            repetition_stop_at_duration_end: repetition_stop_at_duration_end as i16,
+            repetition_stop_at_duration_end,
             execution_time_limit: format!("PT{}S", execution_time_limit.as_secs()).into(),
         }
     }
@@ -26,7 +27,7 @@ impl TaskIdleTrigger {
 pub struct TaskLogonTrigger {
     pub(crate) id: BSTR,
     pub(crate) repetition_interval: BSTR,
-    pub(crate) repetition_stop_at_duration_end: i16,
+    pub(crate) repetition_stop_at_duration_end: bool,
     pub(crate) execution_time_limit: BSTR,
     pub(crate) delay: BSTR,
 }
@@ -41,7 +42,7 @@ impl TaskLogonTrigger {
         Self {
             id: id.into(),
             repetition_interval: format!("PT{}S", repetition_interval.as_secs()).into(),
-            repetition_stop_at_duration_end: repetition_stop_at_duration_end as i16,
+            repetition_stop_at_duration_end,
             execution_time_limit: format!("PT{}S", execution_time_limit.as_secs()).into(),
             delay: format!("PT{}S", delay.as_secs()).into(),
         }
